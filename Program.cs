@@ -1,4 +1,5 @@
 using FamilyTree.Context;
+using FamilyTree.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<HalflingContext>(ServiceLifetime.Singleton,ServiceLifetime.Singleton);
+builder.Services.AddScoped<IHalflingService,HalflingService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
