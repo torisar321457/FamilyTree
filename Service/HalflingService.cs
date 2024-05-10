@@ -21,14 +21,14 @@ namespace FamilyTree.Service
         }
         public async Task<Halfling?> GetGrandpa(int id, CancellationToken cancellationToken)
         {
-            var idGrandpa = _halflingContext.Halflings.FirstOrDefault(x => x.Id == id)?.PathFromPatriarch?.GetAncestor(1)?.ToString().Trim('/');
+            var idGrandpa = _halflingContext.Halflings.FirstOrDefault(x => x.Id == id)?.PathFromPatriarch?.GetAncestor(1)?.ToString().Split('/').LastOrDefault();
             return string.IsNullOrWhiteSpace(idGrandpa)
                 ? throw new ArgumentException()
                 : await _halflingContext.Halflings.FirstOrDefaultAsync(x => x.Id == Convert.ToInt32(idGrandpa), cancellationToken: cancellationToken);
         }
         public async Task<Halfling?> GetGreatGrandpaAsync(int id, CancellationToken cancellationToken)
         {
-            var idGreatGrandpa = _halflingContext.Halflings.FirstOrDefault(x => x.Id == id)?.PathFromPatriarch?.GetAncestor(2)?.ToString().Trim('/');
+            var idGreatGrandpa = _halflingContext.Halflings.FirstOrDefault(x => x.Id == id)?.PathFromPatriarch?.GetAncestor(2)?.ToString().Split('/').LastOrDefault();;
             return string.IsNullOrWhiteSpace(idGreatGrandpa)
                 ? throw new ArgumentException()
                 : await _halflingContext.Halflings.FirstOrDefaultAsync(x => x.Id == Convert.ToInt32(idGreatGrandpa), cancellationToken: cancellationToken);
