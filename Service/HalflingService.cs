@@ -14,24 +14,32 @@ namespace FamilyTree.Service
         }
         public async Task Add(string name, string family, DateTime date, int parentId, CancellationToken cancellationToken)
         {
-            var parentPathFromPatriarch = _halflingContext.Halflings.FirstOrDefault(x => x.Id == parentId)?.PathFromPatriarch;
+            var parentPathFromPatriarch = _halflingContext.Halflings.
+                FirstOrDefault(x => x.Id == parentId)?.PathFromPatriarch;
             _halflingContext.Halflings.Add(
                 new Halfling(name, family, date, parentPathFromPatriarch is not null ? HierarchyId.Parse($"{parentPathFromPatriarch}{parentId}/") : HierarchyId.GetRoot()));
             await _halflingContext.SaveChangesAsync(cancellationToken);
         }
         public async Task<Halfling?> GetGrandpa(int id, CancellationToken cancellationToken)
         {
-            var idGrandpa = _halflingContext.Halflings.FirstOrDefault(x => x.Id == id)?.PathFromPatriarch?.GetAncestor(1)?.ToString().Split('/').LastOrDefault();
+            var idGrandpa = _halflingContext.Halflings.
+                FirstOrDefault(x => x.Id == id)?.PathFromPatriarch?.
+                GetAncestor(1)?.ToString().Trim('/').Split('/').
+                LastOrDefault();
             return string.IsNullOrWhiteSpace(idGrandpa)
                 ? throw new ArgumentException()
                 : await _halflingContext.Halflings.FirstOrDefaultAsync(x => x.Id == Convert.ToInt32(idGrandpa), cancellationToken: cancellationToken);
         }
         public async Task<Halfling?> GetGreatGrandpaAsync(int id, CancellationToken cancellationToken)
         {
-            var idGreatGrandpa = _halflingContext.Halflings.FirstOrDefault(x => x.Id == id)?.PathFromPatriarch?.GetAncestor(2)?.ToString().Split('/').LastOrDefault();;
+            var idGreatGrandpa = _halflingContext.Halflings.
+                FirstOrDefault(x => x.Id == id)?.PathFromPatriarch?.
+                GetAncestor(2)?.ToString().Trim('/').Split('/').
+                LastOrDefault();;
             return string.IsNullOrWhiteSpace(idGreatGrandpa)
                 ? throw new ArgumentException()
-                : await _halflingContext.Halflings.FirstOrDefaultAsync(x => x.Id == Convert.ToInt32(idGreatGrandpa), cancellationToken: cancellationToken);
+                : await _halflingContext.Halflings.
+                FirstOrDefaultAsync(x => x.Id == Convert.ToInt32(idGreatGrandpa), cancellationToken: cancellationToken);
         }
         public async Task<IEnumerable<Halfling>> GetGreatGrandson(int id)
         {
