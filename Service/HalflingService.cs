@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FamilyTree.Service
 {
-    public class HalflingService(HalflingContext halflingContext): IHalflingService
+    public class HalflingService(HalflingContext halflingContext) : IHalflingService
     {
         private readonly HalflingContext _halflingContext = halflingContext;
         public async Task<List<Halfling>> GetAll()
@@ -35,7 +35,7 @@ namespace FamilyTree.Service
             var idGreatGrandpa = _halflingContext.Halflings.
                 FirstOrDefault(x => x.Id == id)?.PathFromPatriarch?.
                 GetAncestor(2)?.ToString().Trim('/').Split('/').
-                LastOrDefault();;
+                LastOrDefault(); ;
             return string.IsNullOrWhiteSpace(idGreatGrandpa)
                 ? throw new ArgumentException()
                 : await _halflingContext.Halflings.
@@ -44,7 +44,10 @@ namespace FamilyTree.Service
         public async Task<IEnumerable<Halfling>> GetGreatGrandson(int id)
         {
             var hierarchyid = _halflingContext.Halflings.FirstOrDefault(x => x.Id == id)?.PathFromPatriarch;
-            return await _halflingContext.Halflings.Where(x => x.PathFromPatriarch.IsDescendantOf(hierarchyid) && x.PathFromPatriarch.GetLevel() == 3).ToListAsync();
+            return hierarchyid is null
+                 ? throw new ArgumentException()
+                 : await _halflingContext.Halflings.Where(x => x.PathFromPatriarch.IsDescendantOf(hierarchyid) &&
+                 x.PathFromPatriarch.GetLevel() == hierarchyid.GetLevel() + 3).ToListAsync();
         }
     }
 }
