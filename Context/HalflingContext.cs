@@ -19,8 +19,7 @@ namespace FamilyTree.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseSqlServer(
-                    @"Server=(localdb)\MSSQLLocalDB;Database=HalfingDB",
-                    sqlServerOptionsBuilder => sqlServerOptionsBuilder.UseHierarchyId());
+                    @"Server=(localdb)\MSSQLLocalDB;Database=HalfingDB");
 
         protected override void OnModelCreating(ModelBuilder ModelBuilder)
         {
